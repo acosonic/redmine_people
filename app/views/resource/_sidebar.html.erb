@@ -1,0 +1,23 @@
+<h3><%=l(:label_hr_resource)%> | <%=l(:label_hr_resource_allocation)%> </h3> 
+
+<% unless @groups.blank? %>
+	<div id="people_groups">
+		<h3><%= l(:label_people_group_plular) %></h3>
+		<ul>
+			<li>
+				<%= link_to l(:label_people_all), {} %>
+			</li>
+		<% @groups.each do |group| %>
+			<li>
+				<%= link_to group.name, {:group_id => group.id}, :class => "#{'selected' if @group && group == @group}"  %>
+			</li>	
+		<% end %>
+		</ul>
+	</div>
+<% end %>
+<% unless @departments.blank? %>
+  <div id="people_departments"> 
+    <h3><%= l(:label_department_plural) %></h3>
+    <%= department_tree_links(@departments) %>
+  </div>  
+<% end %>

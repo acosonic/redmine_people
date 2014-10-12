@@ -1,0 +1,9 @@
+<% unless @memberships.empty? %>
+<ul>
+<% for membership in @memberships %>
+  <li><%= link_to_project(membership.project) %>
+    (<%=h membership.roles.sort.collect(&:to_s).join(', ') %>, <%= format_date(membership.from_date) %>)</li>
+<% end %>
+</ul>
+<% end %>
+</div>

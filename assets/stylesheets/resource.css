@@ -1,0 +1,31 @@
+.person-row {
+	border-bottom-style: dashed;
+	border-bottom-width: thin;
+	border-bottom-color: #999966;
+	padding-bottom:1px;
+}
+
+.project-row {
+	padding-bottom:1px;
+	border-bottom-style: dashed;
+	border-bottom-width: thin;
+	border-bottom-color: #999966;
+}
+.time-row {
+	position: absolute;
+	left: 0px;
+	height: 1px;
+	width: 100%;
+	border-bottom-style: dashed;
+	border-bottom-width: thin;
+	border-bottom-color: #999966;
+}
+
+.person-name-subject {
+	padding-left:2px
+}
+.hr_gantt_subjects { font-size: 0.8em; }
+.hr_gantt_subjects div { line-height:18px;height:18px;overflow:hidden;white-space:nowrap;text-overflow: ellipsis; }
+
+.person.task_todo { background:#00c600 url(../images/milestone_done.png); border: 1px solid #00c600;}
+.person.marker { background-image:url(../images/project_marker.png); background-repeat: no-repeat; border: 0; margin-left: -4px;}

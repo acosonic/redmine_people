@@ -1,0 +1,7 @@
+<p><label for="user_category"><%=l(:label_user_category)%></label>
+	<select id="user_category" name = "user[category]">
+		<option value = "0" <%="selected='selected'" if @user.category==0%>><%=l(:label_category_staff)%></option>
+		<option value = "1" <%="selected='selected'" if @user.category==1%>><%=l(:label_category_customer)%></option>
+		<option value = "2" <%="selected='selected'" if @user.category==2%>><%=l(:label_category_partner)%></option>
+	</select>
+</p>
