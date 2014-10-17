@@ -3,5 +3,6 @@
 		<option value = "0" <%="selected='selected'" if @user.category==0%>><%=l(:label_category_staff)%></option>
 		<option value = "1" <%="selected='selected'" if @user.category==1%>><%=l(:label_category_customer)%></option>
 		<option value = "2" <%="selected='selected'" if @user.category==2%>><%=l(:label_category_partner)%></option>
+		<option value = "99" <%="selected='selected'" if @user.category==99%>><%=l(:label_category_system)%></option>
 	</select>
 </p>
