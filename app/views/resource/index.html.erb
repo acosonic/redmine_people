@@ -3,6 +3,7 @@
 <% html_title(l(:label_hr_resouce_gantt)) -%>
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag :resource, :plugin => 'redmine_people' %>
+  <%= javascript_include_tag :gantt, :plugin => 'redmine_people' %>
 <% end %>
 <%
 	title = "All"
@@ -107,6 +108,20 @@
       style += 'background: #eee;'
     %>
     <%= content_tag(:div, "", :style => style, :class => "gantt_hdr") %>
+    <% if show_resource %>
+    <%
+      style  = ""
+      style += "top: #{2*header_height+1}px;"
+      style += "width: #{subject_width}px;"
+      style += "height: #{header_height-1}px;"
+      style += "text-align:right;padding-right: 5px;"
+    %>
+    <%= content_tag(:div, "", :style => style, :class => "gantt_hdr gantt_res") do%>
+    	<%= content_tag(:small) do %>
+    			<%=l(:label_hr_available_resource)%>:<%= @gantt.people.size%>
+    		<% end %>
+    	<% end %>
+    <% end %>
     <%
       style  = ""
       style += "right:-2px;"
@@ -123,7 +138,7 @@
 </td>
 
 <td>
-<div id="gantt_lines" style="position:relative;height:<%= t_height + s_height %>px;overflow-x:scroll;display: box;" id="gantt_area">
+<div id="gantt_lines" style="position:relative;height:<%= t_height + s_height %>px;overflow:auto;">
 <%
   style  = ""
   style += "width: #{g_width - 1}px;"
@@ -359,7 +374,15 @@
   %>
   <%= content_tag(:div, '&nbsp;'.html_safe, :style => style,:id => "today_line")  %>
 <% end %>
-
+<%
+  style  = ""
+  style += "position: absolute;"
+  style += "height: #{g_height}px;"
+  style += "top: #{headers_height + 1}px;"
+  style += "left: 0px;"
+  style += "width: #{g_width - 1}px;"
+%>
+<%= content_tag(:div, '', :style => style, :id => "gantt_draw_area")%>
 </div>
 </td>
 </tr>
@@ -380,4 +403,9 @@
 
 <% content_for :sidebar do %>
   <%= render :partial => 'sidebar' %>
+<% end %>
+
+<%= javascript_tag do %>
+	$(document).ready(drawGanttHandler);
+	$(window).resize(drawGanttHandler);
 <% end %>
