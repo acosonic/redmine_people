@@ -61,7 +61,7 @@ module Redmine
           @month_from ||= Date.today.month
           @year_from ||= Date.today.year
         end
-        zoom = (options[:zoom] || User.current.pref[:gantt_zoom]).to_i
+        zoom = (options[:zoom] || 2).to_i
         @zoom = (zoom > 0 && zoom < 5) ? zoom : 2
         months = (options[:months] || User.current.pref[:gantt_months]).to_i
         @months = (months > 0 && months < 25) ? months : 6
@@ -230,10 +230,7 @@ module Redmine
 
       #Draw subject for person
       def subject_for_person(person, options)
-        case options[:format]
-        when :html
           html_class = ""
-          #html_class << 'icon icon-projects '
           
           s = "".html_safe
           s << view.avatar(person,
@@ -244,32 +241,24 @@ module Redmine
           subject = view.content_tag(:span, s,
                                      :class => html_class).html_safe
           html_subject(options, subject, :css => "person-row")
-        when :image
-          image_subject(options, person.name)
-        when :pdf
-          pdf_new_page?(options)
-          pdf_subject(options, person.name)
-        end
       end
+      
       #Draw line for person
       def line_for_person(person, options)
         # Skip person that don't have a start_date or due date
-        if person.is_a?(Person) && person.allocation_from_date && person.allocation_to_date #TO-DO
+        if person.is_a?(Person) && person.allocations
           options[:zoom] ||= 1
-          #options[:g_width] ||= (self.date_to - self.date_from + 1) * options[:zoom]
           options[:g_width] ||= (work_days_in(self.date_to, self.date_from) + 1) * options[:zoom]
-          coords = coordinates(person.allocation_from_date, person.allocation_to_date, nil, options[:zoom])
-          label = h(person)
-          case options[:format]
-          when :html
-            html_task(options, coords, :css => "person task", :label => label, :markers => true)
-          when :image
-            image_task(options, coords, :label => label, :markers => true, :height => 3)
-          when :pdf
-            pdf_task(options, coords, :label => label, :markers => true, :height => 0.8)
+          
+          person.allocations.each do |a|
+            label = h(person)
+            coords = coordinates(a.first, a.last, nil, options[:zoom])
+            if (a == person.allocations.last) 
+              html_task(options, coords, :css => "person task", :label => label, :markers => true)
+            else
+              html_task(options, coords, :css => "person task", :markers => true)
+            end
           end
-        else
-          ''
         end
       end
       
@@ -285,13 +274,7 @@ module Redmine
           subject = view.content_tag(:span, s, :class => css_classes).html_safe
           html_subject(options, subject, :css => "project-row",
                        :title => mproject.project.name, :id => "project-#{mproject.project.id}") + "\n"
-        when :image
-          image_subject(options, mproject.project.name)
-        when :pdf
-          pdf_new_page?(options)
-          pdf_subject(options, mproject.project.name)
         end
-        
         output
       end
 
@@ -300,22 +283,23 @@ module Redmine
         if mproject.to_date
           coords = coordinates(mproject.from_date, mproject.to_date, 0, options[:zoom])
           label = "#{mproject.project.name}:#{mproject.allocation}%"
-          case options[:format]
-          when :html
-            html_task(options, coords,
-                      :css => "task ",
-                      :label => label,
-                      :markers => true)
-          when :image
-            image_task(options, coords, :label => label)
-          when :pdf
-            pdf_task(options, coords, :label => label)
-        end
+          
+          html_task(options, coords,:css => "task ",:label => label,:markers => true)
         else
           ''
         end
       end
-
+      
+      # check if range is not in any ranges
+      def resource_evaiable(range)
+        resource = self.people
+        count = resource.size
+        resource.each do |person|
+            count -= 1 if person.in_allocations?(range)
+        end
+        count
+      end
+      
       def work_days_in(date_to, date_from)
         if !@work_on_weekends
           date_to = ensure_workday(date_to)

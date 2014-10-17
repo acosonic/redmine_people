@@ -10,9 +10,11 @@ class Person < User
   STAFF = 0
   CUSTOMER = 1
   PARTNER = 2
+  SYSTEM = 99
   
   GENDERS = [[l(:label_people_male), 0], [l(:label_people_female), 1]]
-  CATEGORIES = [[l(:label_category_staff), 0], [l(:label_category_customer), 1],[l(:label_category_partner), 2]]
+  CATEGORIES = [[l(:label_category_staff), 0], [l(:label_category_customer), 1],
+               [l(:label_category_partner), 2],[l(:label_category_system), 99]]
   
   scope :staff, lambda { where(:category => STAFF) }
   
@@ -106,21 +108,28 @@ class Person < User
   def member_projects
     @member_projects ||= self.memberships.where("#{Project.table_name}.status = #{Project::STATUS_ACTIVE}").all
   end
-  # The earliest start date assgined to this person based on it's  allocation
-  def allocation_from_date
-    @allocation_from_date ||= self.memberships.minimum(:from_date,:conditions => "#{Project.table_name}.status = #{Project::STATUS_ACTIVE}")
-  end
-  # The latest to date of assigned to this person based on it's allocation
-  def allocation_to_date
-    @allocation_to_date ||= self.memberships.maximum(:to_date,:conditions => "#{Project.table_name}.status = #{Project::STATUS_ACTIVE}")
+  # allocation range
+  def allocation
+    return @allocation if @allocation
+    first = self.memberships.minimum(:from_date,:conditions => "#{Project.table_name}.status = #{Project::STATUS_ACTIVE}")
+    last = self.memberships.maximum(:to_date,:conditions => "#{Project.table_name}.status = #{Project::STATUS_ACTIVE}")
+    @allocation ||= first..last if (first && last)
   end
   
-  def assigned_dates
-    terms=[]
-    if person_memberships?
-      
+  def allocations
+    return @allocations if @allocations
+    arr = []
+    self.member_projects.each do |p|
+      first = p.from_date
+      last = p.to_date
+      arr.push(first..last) if (first && last)
     end
-    terms
+    
+    @allocations = merge_ranges (arr)
+  end
+  
+  def in_allocations?(range)
+    self.allocations ? in_ranges?(self.allocations,range): false
   end
 #GMO end    
 end

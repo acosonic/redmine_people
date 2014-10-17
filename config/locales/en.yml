@@ -73,6 +73,7 @@ en:
   label_category_staff: Staff in company
   label_category_customer: Customer
   label_category_partner: Partner
+  label_category_system: System account
    
   label_hr_resource: Resource
   label_hr_resource_allocation: Staff allocation

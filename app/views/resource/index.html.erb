@@ -51,24 +51,26 @@
   @gantt.zoom.times { zoom = zoom * 2 }
 
   subject_width = 250
-  header_heigth = 20
+  header_height = 20
   line_height = 20
-
+  
   show_years = true
   show_weeks = false
   show_days  = false
   show_day_numbers = false
+  show_resource = true
 
-  headers_height = 2 * header_heigth
+  headers_height = 3 * header_height
   if @gantt.zoom > 1
     show_years = false
     show_weeks = true
     if @gantt.zoom > 2
+      show_resource = false
       show_days = true
-      headers_height = (3 * header_heigth).to_i
+      headers_height = (3 * header_height).to_i
       if @gantt.zoom > 3
         show_day_numbers = true
-        headers_height = (3.25 * header_heigth).to_i
+        headers_height = (3.25 * header_height).to_i
       end
     end
   end
@@ -121,7 +123,7 @@
 </td>
 
 <td>
-<div id="gantt_lines" style="position:relative;height:<%= t_height + s_height %>px;overflow:auto;" id="gantt_area">
+<div id="gantt_lines" style="position:relative;height:<%= t_height + s_height %>px;overflow-x:scroll;display: box;" id="gantt_area">
 <%
   style  = ""
   style += "width: #{g_width - 1}px;"
@@ -134,7 +136,7 @@
 <% if show_years %>
   <%
     left = 0
-    height = (show_weeks ? header_heigth : header_heigth + g_height)
+    height = (show_weeks ? header_height : 3*header_height + g_height)
     years = 1
     months_remaining = @gantt.months - (12 - @gantt.date_from.month) - 1
     years += months_remaining <= 0 ? 0 : (months_remaining / 12).to_i + 1
@@ -173,16 +175,17 @@
 <%
   month_f = @gantt.date_from
   left = 0
-  height = (show_weeks ? header_heigth : header_heigth + g_height)
+  height = (show_weeks || show_resource ? header_height : header_height + g_height)
 %>
 <% @gantt.months.times do %>
   <%
     width = (@gantt.work_days_in(month_f >> 1, month_f) * zoom - 1).to_i
     style  = ""
-    style += "top: #{header_heigth+1}px;" if show_years
+    style += "top: #{header_height+1}px;" if show_years
     style += "left: #{left}px;"
     style += "width: #{width}px;"
     style += "height: #{height}px;"
+    
   %>
   <%= content_tag(:div, :style => style, :class => "gantt_hdr") do %>
     <%
@@ -192,7 +195,21 @@
       <%= link_to h("#{month_title}"),
                   @gantt.params.merge(:year => month_f.year, :month => month_f.month),
                   :title => "#{month_name(month_f.month)} #{month_f.year}" %>
+      <% ###### Resource headers ###### %>
   <% end %>
+  <% if show_resource && show_years %>
+	<%
+	rheight = header_height + g_height - 2
+    rstyle  = ""
+    rstyle += "top: #{(header_height*2)+2}px;"
+    rstyle += "left: #{left}px;"
+    rstyle += "width: #{width}px;"
+    rstyle += "height: #{rheight}px;"
+	%>
+    <%= content_tag(:div, :style => rstyle, :class => "gantt_hdr gantt_res") do %>
+    	10
+    <% end %>
+<% end %>
   <%
     left = left + width + 1
     month_f = month_f >> 1
@@ -204,7 +221,8 @@
   <%
     work_days_in_week = @gantt.work_on_weekends ? 7 : 5
     left = 0
-    height = (show_days ? header_heigth - 1 : header_heigth - 1 + g_height)
+    height = (show_days || show_resource ? header_height - 1 : header_height - 1 + g_height)
+    rheight = header_height + g_height - 1
   %>
   <% if @gantt.date_from.cwday == 1 %>
     <%
@@ -218,12 +236,23 @@
       width = (work_days_in_week - @gantt.date_from.cwday + 1) * zoom - 1
       style  = ""
       style += "left: #{left}px;"
-      style += "top: #{header_heigth+1}px;"
+      style += "top: #{header_height+1}px;"
       style += "width: #{width}px;"
       style += "height: #{height}px;"
+      rstyle  = ""
+      rstyle += "top: #{(header_height*2)+1}px;"
+      rstyle += "left: #{left}px;"
+      rstyle += "width: #{width}px;"
+      rstyle += "height: #{rheight}px;"
+    
     %>
     <%= content_tag(:div, '&nbsp;'.html_safe,
                     :style => style, :class => "gantt_hdr") %>
+    <% if show_resource %>
+    	<%= content_tag(:div, '&nbsp;'.html_safe,
+                    :style => rstyle, :class => "gantt_hdr") %>
+    <% end %>
+                    
     <% left = left + width + 1 %>
   <% end %>
   <% while week_f <= @gantt.date_to %>
@@ -233,7 +262,7 @@
                   (@gantt.date_to - week_f + 1) * zoom - 1).to_i
       style  = ""
       style += "left: #{left}px;"
-      style += "top: #{header_heigth+1}px;"
+      style += "top: #{header_height+1}px;"
       style += "width: #{width}px;"
       style += "height: #{height}px;"
     %>
@@ -241,6 +270,23 @@
       <%= content_tag(:small) do %>
         <%= week_f.cweek if width >= 16 %>
       <% end %>
+    <% end %>
+    <% if show_resource %>
+      <%
+        first_date = week_f
+        last_date = week_f + 7
+      	range = first_date..last_date
+        rstyle  = ""
+        rstyle += "top: #{(header_height*2)+1}px;"
+        rstyle += "left: #{left}px;"
+        rstyle += "width: #{width}px;"
+        rstyle += "height: #{rheight}px;"
+      %>
+    	<%= content_tag(:div, :style => rstyle, :class => "gantt_hdr gantt_res") do %>
+    		<%= content_tag(:small) do %>
+    			<%= @gantt.resource_evaiable(range) %>
+    		<% end %>
+    	<% end %>
     <% end %>
     <%
       left = left + width + 1
@@ -254,9 +300,9 @@
   <%
     left = 0
     if show_day_numbers
-    	height = g_height +(1.25 * header_heigth).to_i - 1
+    	height = g_height +(1.25 * header_height).to_i - 1
     else
-    	height = g_height + header_heigth - 1
+    	height = g_height + header_height - 1
     end
     wday = @gantt.date_from.cwday
   %>
@@ -267,7 +313,7 @@
         day_abbr = [:"zh", :"zh-TW"].include?(current_language) ? day_name(wday)[6,3] : day_name(wday).first # correct abbreviation of day of week for Chinese language
         style  = ""
         style += "left: #{left}px;"
-        style += "top: #{(header_heigth*2)+1}px;"
+        style += "top: #{(header_height*2)+1}px;"
         style += "width: #{width}px;"
         style += "height: #{height}px;"
         style += "text-align:center;"
