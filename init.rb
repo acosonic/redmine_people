@@ -1,5 +1,6 @@
 require 'redmine_people'
 require 'people_menu'
+require 'date_function'
 
 Redmine::Plugin.register :redmine_people do
   name 'Redmine People plugin'

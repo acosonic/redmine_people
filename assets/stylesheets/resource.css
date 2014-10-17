@@ -21,6 +21,7 @@
 	border-bottom-color: #999966;
 }
 
+.gantt_res { color:#339933}
 .person-name-subject {
 	padding-left:2px
 }
@@ -28,4 +29,6 @@
 .hr_gantt_subjects div { line-height:18px;height:18px;overflow:hidden;white-space:nowrap;text-overflow: ellipsis; }
 
 .person.task_todo { background:#00c600 url(../images/milestone_done.png); border: 1px solid #00c600;}
+/**	
 .person.marker { background-image:url(../images/project_marker.png); background-repeat: no-repeat; border: 0; margin-left: -4px;}
+ */
