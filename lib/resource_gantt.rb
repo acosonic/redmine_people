@@ -165,7 +165,8 @@ module Redmine
         return @people if @people
         scope = Person.logged.status(Principal::STATUS_ACTIVE)
         scope = scope.staff
-        scope = scope.in_department(@department_id) if @department_id.present?
+        #scope = scope.in_department(@department_id) if @department_id.present?
+        scope = scope.in_department_tree(@department) if @department.present?
         scope = scope.in_group(@group_id) if @group_id.present?
         scope = scope.where(:id => @person_id) if @person_id.present?
         scope = scope.where(:type => 'User')

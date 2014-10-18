@@ -11,6 +11,9 @@
 	title = @gantt.group.name if @gantt.group.present?
 	title = @gantt.person.name if @gantt.person.present?
 %>
+<div class="contextual resource_title_right">
+	<%= link_to l(:label_hr_resource_my_allocation), {:controller => 'resource', :action => 'show', :person_id => User.current} %>
+</div>
 <h2><%= l(:label_hr_resouce_gantt)%> | <%=title%></h2>
 
 <%= form_tag({:controller => 'resource', :action => 'show',

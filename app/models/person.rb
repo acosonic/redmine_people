@@ -22,10 +22,21 @@ class Person < User
     department_id = department.is_a?(Department) ? department.id : department.to_i
     { :conditions => {:department_id => department_id, :type => "User"} }
   }
+  
+  scope :in_department_tree, lambda {|department|
+    ids = department.self_and_descendants
+    { :conditions => {:department_id => ids.map(&:id), :type => "User"} }
+  }
+  
   scope :not_in_department, lambda {|department|
     department_id = department.is_a?(Department) ? department.id : department.to_i
     { :conditions => ["(#{User.table_name}.department_id != ?) OR (#{User.table_name}.department_id IS NULL)", department_id] }
   }  
+  
+  scope :not_in_department_tree, lambda {|department|
+    ids = department.self_and_descendants
+    { :conditions => ["(#{User.table_name}.department_id NOT IN (?)) OR (#{User.table_name}.department_id IS NULL)", ids.map(&:id)],:type => "User" }
+  }
 
   scope :seach_by_name, lambda {|search| {:conditions =>   ["(LOWER(#{Person.table_name}.firstname) LIKE ? OR 
                                                                     LOWER(#{Person.table_name}.lastname) LIKE ? OR 
@@ -127,7 +138,7 @@ class Person < User
     
     @allocations = merge_ranges (arr)
   end
-  
+  # check if range is allocated to this user or not
   def in_allocations?(range)
     self.allocations ? in_ranges?(self.allocations,range): false
   end

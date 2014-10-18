@@ -1,7 +1,5 @@
 <div class="contextual">
   <%= link_to l(:label_user_new), {:controller => 'people', :action => 'new', :department_id => @department}, :class => 'icon icon-add' if User.current.allowed_people_to?(:add_people, @person) %>
-	| <%= link_to l(:label_hr_resource_my_allocation), {:controller => 'resource', :action => 'show', :person_id => User.current} if User.current.allowed_people_to?(:view_resource, @person) %>
-	| <%= link_to l(:label_hr_resource_allocation), {:controller => 'resource', :action => 'show'} if User.current.allowed_people_to?(:view_resource, @person) %>
 </div>
 
 <div class="filters">   
