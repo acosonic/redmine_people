@@ -200,6 +200,7 @@ private
     # scope = scope.scoped(:conditions => ["#{Person.table_name}.status_id = ?", params[:status_id]]) if (!params[:status_id].blank? && params[:status_id] != "o" && params[:status_id] != "d")
     @status = params[:status] || 1
     scope = Person.logged.status(@status)
+    scope = scope.staff
     scope = scope.seach_by_name(params[:name]) if params[:name].present?
     scope = scope.in_group(params[:group_id]) if params[:group_id].present?
     scope = scope.in_department(params[:department_id]) if params[:department_id].present?
