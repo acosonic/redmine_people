@@ -12,7 +12,8 @@ end
 
 module RedminePeople
   def self.available_permissions
-    [:edit_people, :view_people, :add_people, :delete_people, :edit_departments, :delete_departments,:view_resource]
+    [:edit_people, :view_people, :add_people, :delete_people, :edit_departments, :delete_departments,
+     :edit_timesheet, :view_resource]
   end
 
   def self.settings() Setting[:plugin_redmine_people] end

@@ -37,6 +37,7 @@ en:
   people_permission_add_people: Add people
   people_permission_delete_people: Delete people
   people_permission_add_attachments: Add atthachments
+  people_permission_edit_timesheet: Edit timesheet
 
   #0.0.2
   label_people_acl_settings: ACL settings
