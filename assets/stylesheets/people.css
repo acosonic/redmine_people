@@ -208,4 +208,7 @@ img.gravatar-s {
     -moz-border-radius: 50%;
     border-radius: 50%;
 }
+
+#tab-content-acl .splitcontentleft{float:left; width:69%;}
+#tab-content-acl .splitcontentright{float:right; width:29%;}
    

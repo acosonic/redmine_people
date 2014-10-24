@@ -198,17 +198,19 @@ private
 
   def find_people(pages=true)
     # scope = scope.scoped(:conditions => ["#{Person.table_name}.status_id = ?", params[:status_id]]) if (!params[:status_id].blank? && params[:status_id] != "o" && params[:status_id] != "d")
+    @department = Department.find(params[:department_id]) if params[:department_id].present?
+    
     @status = params[:status] || 1
     scope = Person.logged.status(@status)
     scope = scope.staff
     scope = scope.seach_by_name(params[:name]) if params[:name].present?
     scope = scope.in_group(params[:group_id]) if params[:group_id].present?
-    scope = scope.in_department(params[:department_id]) if params[:department_id].present?
+    scope = scope.in_department_tree(@department) if @department.present?
     scope = scope.where(:type => 'User')
 
     @people_count = scope.count
     @group = Group.find(params[:group_id]) if params[:group_id].present?
-    @department = Department.find(params[:department_id]) if params[:department_id].present?
+    
     if pages
       @limit =  per_page_option
       @people_pages = Paginator.new(self, @people_count,  @limit, params[:page])
