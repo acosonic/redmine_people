@@ -191,7 +191,6 @@ ul.department-tree li {list-style-type:none; margin: 0px 2px 0px 0px; padding: 0
 
 /* Rounded avatars */
 img.gravatar {
-    float: left;
     margin: 1px;
     border: 1px solid #DDD;
     -webkit-border-radius: 50%;
