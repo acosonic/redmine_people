@@ -3,7 +3,8 @@
 
 <% people_tabs = [{:name => 'general', :partial => 'general', :label => :label_general},
         {:name => 'acl', :partial => 'acl', :label => :label_people_acl_settings},
-        {:name => 'departments', :partial => 'departments', :label => :label_department_plural}
+        {:name => 'departments', :partial => 'departments', :label => :label_department_plural},
+        {:name => 'skill_categories', :partial => 'skill_categories', :label => :label_skill_category}
         ]   %>   
 
 <%  people_tabs.push({:name => 'hidden', :partial => 'hidden', :label => :label_people_hidden}) if params[:hidden] %>

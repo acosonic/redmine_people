@@ -66,6 +66,7 @@ en:
   #0.1.7
   label_people_show_for_registered_users: Show people for registered users
   
+  #GMO add below 
   #hr management
   label_people_management: People Management
   #resource
@@ -82,3 +83,12 @@ en:
   label_hr_resouce_gantt: Allocation Gantt
   label_hr_display_project: Display project 
   label_hr_available_resource: Available resource
+  
+  #skills
+  label_skill_category: Skill category
+  label_skill_category_new: New skill category
+  label_skill: Skill
+  label_skill_name: Skill name
+  label_skill_category_name: Skill category name
+  people_permission_edit_skill: Edit skill
+   

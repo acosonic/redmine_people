@@ -25,3 +25,17 @@ end
 resources :resource
 get '/resource', :to => 'resource#show', :as => 'people_resource'
 
+resources :skills do
+  collection do
+    get :new_category
+    post :update_category
+  end
+end
+
+resources :skills do
+  member do
+    get :edit_category
+    delete :remove_category
+  end
+end
+

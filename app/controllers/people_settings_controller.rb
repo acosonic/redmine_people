@@ -11,6 +11,8 @@ class PeopleSettingsController < ApplicationController
 
   def index
     @departments = Department.all
+    @skill_categories = SkillCategory.all
+    @skills = Skill.all
   end
 
   def update

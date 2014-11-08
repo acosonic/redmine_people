@@ -1,0 +1,11 @@
+<h2><%= l(:label_skill_category_new) %></h2>
+
+<%= labelled_form_for @skill_category, :url => {:controller => 'skills', :action => 'update_category'}  do |f| %>
+  <%= render :partial => 'form_category', :locals => {:f => f} %>
+  <%= submit_tag l(:button_create) %>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag :people, :plugin => 'redmine_people'  %>
+  <%= stylesheet_link_tag :people, :plugin => 'redmine_people' %>
+<% end %>
